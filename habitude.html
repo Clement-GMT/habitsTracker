@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ff7bab">
+    <title>Nos petites habitudes ✨</title>
+    <style>
+        :root {
+            --ink: #54213d;
+            --muted: #8b5c73;
+            --pink: #ff6fa6;
+            --pink-deep: #e34882;
+            --lavender: #8a73ed;
+            --cream: #fff9fb;
+            --card: rgba(255, 255, 255, .9);
+            --line: #f3d4e1;
+            --success: #3bbf83;
+            --shadow: 0 16px 45px rgba(144, 51, 96, .14);
+            --radius: 22px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-width: 320px;
+            margin: 0;
+            color: var(--ink);
+            font-family: "Segoe UI", ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background:
+                radial-gradient(circle at 4% 7%, rgba(255,255,255,.72) 0 2px, transparent 3px),
+                radial-gradient(circle at 92% 19%, rgba(255,255,255,.55) 0 3px, transparent 4px),
+                linear-gradient(145deg, #ffd9e8 0%, #ffe9db 48%, #ded7ff 100%);
+            background-attachment: fixed;
+        }
+
+        button, input { font: inherit; }
+        button { -webkit-tap-highlight-color: transparent; }
+        button:focus-visible, input:focus-visible { outline: 3px solid rgba(138, 115, 237, .45); outline-offset: 2px; }
+
+        .page-shell {
+            width: min(100%, 1160px);
+            margin: 0 auto;
+            padding: 20px 14px 42px;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .back-link, .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 40px;
+            border-radius: 999px;
+            font-size: .84rem;
+            font-weight: 800;
+        }
+
+        .back-link {
+            padding: 9px 13px;
+            color: var(--ink);
+            background: rgba(255,255,255,.65);
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(129, 56, 91, .08);
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .back-link:hover { transform: translateY(-2px); background: white; }
+
+        .status-pill {
+            max-width: 178px;
+            padding: 8px 11px;
+            color: var(--muted);
+            background: rgba(255,255,255,.58);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-dot { width: 9px; height: 9px; flex: 0 0 9px; border-radius: 50%; background: #f5a623; }
+        .status-pill.connected .status-dot { background: var(--success); box-shadow: 0 0 0 4px rgba(59,191,131,.16); }
+        .status-pill.error .status-dot { background: #ec5a75; }
+
+        .profile-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 18px;
+            padding: 6px;
+            border: 1px solid rgba(255,255,255,.76);
+            border-radius: 18px;
+            background: rgba(255,255,255,.52);
+            box-shadow: 0 8px 22px rgba(129, 56, 91, .08);
+        }
+
+        .profile-tab {
+            min-height: 47px;
+            border: 0;
+            border-radius: 13px;
+            color: var(--muted);
+            background: transparent;
+            cursor: pointer;
+            font-size: .91rem;
+            font-weight: 900;
+            transition: transform .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+
+        .profile-tab:hover { transform: translateY(-1px); color: var(--ink); background: rgba(255,255,255,.55); }
+        .profile-tab.active { color: #a5285b; background: white; box-shadow: 0 4px 13px rgba(159, 59, 105, .14); }
+        .profile-tab[data-profile="clement"].active { color: #6852d1; }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 25px 21px 28px;
+            border-radius: 28px;
+            color: white;
+            background: linear-gradient(127deg, #ff6fa6, #9d7cf0);
+            box-shadow: 0 15px 35px rgba(165, 76, 154, .23);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -108px;
+            right: -44px;
+            border: 26px solid rgba(255,255,255,.18);
+            border-radius: 50%;
+        }
+
+        .eyebrow { margin: 0 0 7px; font-size: .8rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; opacity: .85; }
+        h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(1.85rem, 8vw, 3.15rem); line-height: 1.03; letter-spacing: -.045em; }
+        .hero p { position: relative; z-index: 1; max-width: 555px; margin: 13px 0 0; font-size: .97rem; line-height: 1.55; opacity: .96; }
+
+        .card {
+            margin-top: 18px;
+            padding: 18px;
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,.84);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+        .section-heading h2 { margin: 0; font-size: 1.17rem; letter-spacing: -.02em; }
+        .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: .86rem; line-height: 1.4; }
+
+        .week-navigation {
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr) 42px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .week-label { text-align: center; font-size: .89rem; font-weight: 800; line-height: 1.3; }
+        .week-label small { display: block; margin-top: 2px; color: var(--muted); font-size: .72rem; font-weight: 700; }
+
+        .icon-button, .today-button, .save-habit-button, .delete-habit-button, .debug-copy {
+            border: 0;
+            cursor: pointer;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .icon-button {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            color: var(--pink-deep);
+            background: #fff0f6;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        .icon-button:hover, .today-button:hover, .save-habit-button:hover, .delete-habit-button:hover, .debug-copy:hover { transform: translateY(-2px); }
+        .today-button { display: block; margin: 0 auto 16px; padding: 8px 13px; border-radius: 999px; color: var(--lavender); background: #f0ecff; font-size: .79rem; font-weight: 800; }
+
+        .week-calendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+        .calendar-day { min-height: 116px; padding: 7px 4px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.65); }
+        .calendar-day.is-today { border: 2px solid var(--pink); background: #fff4f8; }
+        .day-name { display: block; margin-bottom: 3px; color: var(--muted); font-size: .62rem; font-weight: 900; text-align: center; text-transform: uppercase; }
+        .day-number { display: block; margin-bottom: 8px; color: var(--ink); font-size: .87rem; font-weight: 900; text-align: center; }
+        .calendar-events { display: grid; gap: 4px; }
+        .calendar-event { display: block; padding: 4px 4px; overflow: hidden; border-radius: 6px; color: #a5285b; background: #ffe0ec; font-size: .59rem; font-weight: 800; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
+        .calendar-empty { display: block; padding-top: 13px; color: #cba8b9; font-size: .59rem; font-style: italic; text-align: center; }
+
+        .progress-summary { display: flex; align-items: center; gap: 11px; margin-top: 15px; padding: 12px; border-radius: 14px; background: #fff1f6; }
+        .progress-orb { display: grid; width: 39px; height: 39px; flex: 0 0 39px; place-items: center; border-radius: 50%; color: white; background: linear-gradient(145deg, var(--pink), var(--lavender)); font-size: .7rem; font-weight: 900; }
+        .progress-summary strong { display: block; font-size: .82rem; }
+        .progress-summary span { display: block; margin-top: 2px; color: var(--muted); font-size: .72rem; }
+
+        .add-habit-form { display: grid; gap: 9px; }
+        .text-input, .goal-input { width: 100%; min-height: 45px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 13px; color: var(--ink); background: white; }
+        .text-input::placeholder { color: #c69baa; }
+        .goal-row { display: grid; grid-template-columns: 1fr 96px; gap: 9px; }
+        .goal-input { text-align: center; }
+        .save-habit-button { min-height: 45px; border-radius: 13px; color: white; background: linear-gradient(135deg, var(--pink), var(--lavender)); box-shadow: 0 6px 15px rgba(174,85,167,.25); font-weight: 900; }
+
+        .habits-list { display: grid; gap: 12px; margin-top: 19px; }
+        .empty-state { padding: 22px 14px; border: 1px dashed #edbdce; border-radius: 16px; color: var(--muted); background: #fff8fb; font-size: .87rem; line-height: 1.45; text-align: center; }
+
+        .habit-card { padding: 14px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.68); }
+        .habit-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+        .habit-name { margin: 0; font-size: 1rem; line-height: 1.25; overflow-wrap: anywhere; }
+        .habit-progress { display: inline-flex; align-items: center; min-height: 24px; margin-top: 4px; padding: 3px 8px; border-radius: 999px; color: #a43d67; background: #ffe3ed; font-size: .72rem; font-weight: 900; white-space: nowrap; }
+        .delete-habit-button { width: 31px; height: 31px; flex: 0 0 31px; border-radius: 10px; color: #c26083; background: #fff0f4; font-size: 1rem; }
+
+        .day-checkboxes { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+        .day-check { position: relative; display: grid; min-width: 0; gap: 5px; cursor: pointer; place-items: center; }
+        .day-check input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+        .day-check abbr { color: var(--muted); font-size: .63rem; font-weight: 900; text-decoration: none; }
+        .day-check .check-circle { display: grid; width: 32px; height: 32px; place-items: center; border: 2px solid #edc1d0; border-radius: 50%; color: transparent; background: white; font-size: .9rem; font-weight: 900; transition: all .17s ease; }
+        .day-check input:checked + .check-circle { border-color: var(--success); color: white; background: var(--success); box-shadow: 0 4px 9px rgba(59,191,131,.25); }
+        .day-check input:focus-visible + .check-circle { outline: 3px solid rgba(138,115,237,.45); outline-offset: 2px; }
+        .day-check.is-today abbr { color: var(--pink-deep); }
+
+        .toast { position: fixed; z-index: 20; right: 16px; bottom: 16px; max-width: calc(100% - 32px); padding: 11px 14px; border-radius: 14px; color: white; background: rgba(84,33,61,.94); box-shadow: 0 10px 30px rgba(72,27,51,.25); font-size: .84rem; font-weight: 700; opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity .2s ease, transform .2s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Le panneau de diagnostic reste intentionnellement absent des écrans mobiles. */
+        .debug-panel { display: none; }
+
+        @media (min-width: 620px) {
+            .page-shell { padding: 30px 24px 56px; }
+            .hero { padding: 35px 38px 38px; }
+            .card { padding: 24px; }
+            .add-habit-form { grid-template-columns: minmax(0, 1fr) 116px 150px; align-items: end; }
+            .add-habit-form .form-label { grid-column: auto; }
+            .goal-row { display: block; }
+            .goal-row label { display: none; }
+            .week-calendar { gap: 8px; }
+            .calendar-day { min-height: 133px; padding: 10px 7px; }
+            .day-name { font-size: .7rem; }
+            .calendar-event { padding: 5px; font-size: .68rem; }
+            .calendar-empty { font-size: .66rem; }
+            .habit-card { padding: 17px; }
+            .day-check .check-circle { width: 37px; height: 37px; }
+        }
+
+        @media (min-width: 900px) {
+            .page-shell { padding-top: 36px; }
+            .main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+            .main-grid .habits-card { margin-top: 18px; }
+            .debug-panel { display: block; position: sticky; top: 18px; margin-top: 18px; padding: 17px; border: 1px dashed #e7b4ca; border-radius: var(--radius); background: rgba(255,250,252,.72); color: var(--muted); box-shadow: 0 9px 28px rgba(126,65,92,.09); }
+            .debug-panel summary { cursor: pointer; color: var(--ink); font-size: .9rem; font-weight: 900; }
+            .debug-content { margin-top: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .71rem; line-height: 1.65; }
+            .debug-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+            .debug-list strong { color: var(--ink); }
+            .debug-copy { width: 100%; margin-top: 14px; padding: 9px; border-radius: 10px; color: var(--lavender); background: #f0ecff; font-size: .74rem; font-weight: 900; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <header class="site-header">
+            <a class="back-link" href="Index.html" aria-label="Retour à l'accueil">← Accueil</a>
+            <div class="status-pill" id="firebaseStatus" role="status" aria-live="polite">
+                <span class="status-dot"></span><span id="statusText">Connexion…</span>
+            </div>
+        </header>
+
+        <nav class="profile-tabs" aria-label="Choisir les habitudes à afficher">
+            <button class="profile-tab active" type="button" data-profile="marie" aria-pressed="true">💖 Marie</button>
+            <button class="profile-tab" type="button" data-profile="clement" aria-pressed="false">⚡ Clément</button>
+        </nav>
+
+        <section class="hero" aria-labelledby="pageTitle">
+            <p class="eyebrow" id="profileEyebrow">L'espace de Marie</p>
+            <h1 id="pageTitle">Les habitudes de Marie ✨</h1>
+            <p id="profileSubtitle">Garde une trace des petites choses qui te font du bien.</p>
+        </section>
+
+        <div class="main-grid">
+            <div>
+                <section class="card" aria-labelledby="calendarHeading">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="calendarHeading">🗓️ Cette semaine</h2>
+                            <p>Les habitudes cochées s’affichent directement ici.</p>
+                        </div>
+                    </div>
+
+                    <div class="week-navigation" aria-label="Navigation par semaine">
+                        <button class="icon-button" id="previousWeek" type="button" aria-label="Semaine précédente">‹</button>
+                        <div class="week-label" id="weekLabel" aria-live="polite"></div>
+                        <button class="icon-button" id="nextWeek" type="button" aria-label="Semaine suivante">›</button>
+                    </div>
+                    <button class="today-button" id="todayButton" type="button">Revenir à aujourd’hui</button>
+
+                    <div class="week-calendar" id="weekCalendar" aria-label="Calendrier hebdomadaire"></div>
+
+                    <div class="progress-summary" aria-live="polite">
+                        <div class="progress-orb" id="progressPercent">0%</div>
+                        <div>
+                            <strong id="progressText">Une nouvelle semaine à inventer</strong>
+                            <span id="progressDetail">Ajoutez une habitude pour commencer.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card habits-card" aria-labelledby="habitsHeading">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="habitsHeading">✅ Nos habitudes</h2>
+                            <p>Choisissez un objectif, puis cochez chaque jour réalisé.</p>
+                        </div>
+                    </div>
+
+                    <form class="add-habit-form" id="addHabitForm">
+                        <label class="form-label" for="habitName">
+                            <span class="sr-only">Nouvelle habitude</span>
+                            <input class="text-input" id="habitName" name="habitName" maxlength="70" required placeholder="Ex. Marcher ensemble" autocomplete="off">
+                        </label>
+                        <div class="goal-row">
+                            <label for="habitGoal" class="sr-only">Objectif hebdomadaire</label>
+                            <input class="goal-input" id="habitGoal" name="habitGoal" type="number" min="1" max="7" value="3" required aria-label="Objectif par semaine, de 1 à 7 fois">
+                        </div>
+                        <button class="save-habit-button" type="submit">+ Ajouter</button>
+                    </form>
+
+                    <div class="habits-list" id="habitsList" aria-live="polite"></div>
+                </section>
+            </div>
+
+            <details class="debug-panel" id="debugPanel">
+                <summary>🛠️ Debug admin</summary>
+                <div class="debug-content">
+                    <ul class="debug-list">
+                        <li><strong>Profil :</strong> <span id="debugProfile">John</span></li>
+                        <li><strong>Chemin :</strong> <span id="debugPath">—</span></li>
+                        <li><strong>État :</strong> <span id="debugConnection">Connexion…</span></li>
+                        <li><strong>Habitudes :</strong> <span id="debugHabits">0</span></li>
+                        <li><strong>Coches (semaine) :</strong> <span id="debugChecks">0</span></li>
+                        <li><strong>Dernière sync :</strong> <span id="debugSync">—</span></li>
+                    </ul>
+                    <button class="debug-copy" id="copyDebug" type="button">Copier le snapshot JSON</button>
+                </div>
+            </details>
+        </div>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, push, set, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: '',
+            authDomain: '',
+            databaseURL: '',
+            projectId: '',
+            storageBucket: '',
+            messagingSenderId: '',
+            appId: ''
+        };
+
+        // La base existante autorise les données partagées sous `emotions`.
+        // Chaque profil possède sa propre branche isolée.
+        const DATABASE_ROOT = 'emotions/habitsTracker/v1';
+        const PROFILES = {
+            john: { name: 'John', emoji: '💖' },
+            doe: { name: 'Doe', emoji: '⚡' }
+        };
+        const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        const DAY_NAMES_FULL = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+        const state = { habits: {}, completions: {}, selectedWeek: getStartOfWeek(new Date()), activeProfile: 'john', connected: false, lastSync: null };
+
+        const elements = {
+            calendar: document.getElementById('weekCalendar'),
+            label: document.getElementById('weekLabel'),
+            habitsList: document.getElementById('habitsList'),
+            form: document.getElementById('addHabitForm'),
+            name: document.getElementById('habitName'),
+            goal: document.getElementById('habitGoal'),
+            status: document.getElementById('firebaseStatus'),
+            statusText: document.getElementById('statusText'),
+            progressPercent: document.getElementById('progressPercent'),
+            progressText: document.getElementById('progressText'),
+            progressDetail: document.getElementById('progressDetail'),
+            toast: document.getElementById('toast'),
+            profileTabs: document.querySelectorAll('[data-profile]'),
+            profileEyebrow: document.getElementById('profileEyebrow'),
+            profileTitle: document.getElementById('pageTitle'),
+            profileSubtitle: document.getElementById('profileSubtitle'),
+            debugConnection: document.getElementById('debugConnection'),
+            debugProfile: document.getElementById('debugProfile'),
+            debugPath: document.getElementById('debugPath'),
+            debugHabits: document.getElementById('debugHabits'),
+            debugChecks: document.getElementById('debugChecks'),
+            debugSync: document.getElementById('debugSync')
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        let unsubscribeTracker = () => {};
+
+        function getStartOfWeek(value) {
+            const date = new Date(value);
+            date.setHours(0, 0, 0, 0);
+            const day = date.getDay();
+            date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
+            return date;
+        }
+
+        function addDays(date, number) {
+            const next = new Date(date);
+            next.setDate(next.getDate() + number);
+            return next;
+        }
+
+        function dateKey(date) {
+            const local = new Date(date);
+            const year = local.getFullYear();
+            const month = String(local.getMonth() + 1).padStart(2, '0');
+            const day = String(local.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' })[char]);
+        }
+
+        function weekDates() {
+            return Array.from({ length: 7 }, (_, index) => addDays(state.selectedWeek, index));
+        }
+
+        function currentHabits() {
+            return Object.entries(state.habits)
+                .map(([id, habit]) => ({ id, name: habit?.name || 'Sans nom', goal: clampGoal(habit?.goal) }))
+                .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+        }
+
+        function clampGoal(value) {
+            return Math.min(7, Math.max(1, Number.parseInt(value, 10) || 1));
+        }
+
+        function isDone(habitId, day) {
+            return state.completions[dateKey(day)]?.[habitId] === true;
+        }
+
+        function currentProfile() {
+            return PROFILES[state.activeProfile];
+        }
+
+        function databasePath() {
+            return `${DATABASE_ROOT}/${state.activeProfile}`;
+        }
+
+        function updateProfileUI() {
+            const profile = currentProfile();
+            elements.profileEyebrow.textContent = `L'espace de ${profile.name}`;
+            elements.profileTitle.textContent = `Les habitudes de ${profile.name} ✨`;
+            elements.profileSubtitle.textContent = `Garde une trace des petites choses qui te font du bien, ${profile.name}.`;
+            elements.debugProfile.textContent = profile.name;
+            elements.debugPath.textContent = databasePath();
+
+            elements.profileTabs.forEach(tab => {
+                const isActive = tab.dataset.profile === state.activeProfile;
+                tab.classList.toggle('active', isActive);
+                tab.setAttribute('aria-pressed', String(isActive));
+            });
+        }
+
+        function setStatus(type, message) {
+            elements.status.className = `status-pill ${type}`;
+            elements.statusText.textContent = message;
+            elements.debugConnection.textContent = message;
+        }
+
+        function formatWeekLabel() {
+            const start = state.selectedWeek;
+            const end = addDays(start, 6);
+            const formatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' });
+            const startText = formatter.format(start);
+            const endText = end.getMonth() === start.getMonth()
+                ? `${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'long' })}`
+                : formatter.format(end);
+            elements.label.innerHTML = `Semaine du ${startText}<small>au ${endText} ${end.getFullYear()}</small>`;
+        }
+
+        function renderCalendar() {
+            formatWeekLabel();
+            const todayKey = dateKey(new Date());
+            const habits = currentHabits();
+
+            elements.calendar.innerHTML = weekDates().map((day, index) => {
+                const key = dateKey(day);
+                const completed = habits.filter(habit => isDone(habit.id, day));
+                const events = completed.length
+                    ? completed.map(habit => `<span class="calendar-event" title="${escapeHtml(habit.name)}">✓ ${escapeHtml(habit.name)}</span>`).join('')
+                    : '<span class="calendar-empty">Rien de prévu</span>';
+                return `
+                    <article class="calendar-day ${key === todayKey ? 'is-today' : ''}" aria-label="${DAY_NAMES_FULL[index]} ${day.getDate()}">
+                        <span class="day-name">${DAY_NAMES[index]}</span>
+                        <span class="day-number">${day.getDate()}</span>
+                        <div class="calendar-events">${events}</div>
+                    </article>`;
+            }).join('');
+        }
+
+        function renderHabits() {
+            const habits = currentHabits();
+            const days = weekDates();
+            const todayKey = dateKey(new Date());
+
+            if (!habits.length) {
+                elements.habitsList.innerHTML = '<div class="empty-state">🌱 Ajoute ta première habitude. Elle sera sauvegardée dans ton espace personnel.</div>';
+                return;
+            }
+
+            elements.habitsList.innerHTML = habits.map(habit => {
+                const completionCount = days.filter(day => isDone(habit.id, day)).length;
+                const checks = days.map((day, index) => {
+                    const key = dateKey(day);
+                    const inputId = `check-${habit.id}-${key}`;
+                    return `
+                        <label class="day-check ${key === todayKey ? 'is-today' : ''}" title="${DAY_NAMES_FULL[index]} ${day.getDate()}">
+                            <abbr title="${DAY_NAMES_FULL[index]}">${DAY_NAMES[index].slice(0, 1)}</abbr>
+                            <input id="${inputId}" type="checkbox" data-habit-id="${habit.id}" data-date="${key}" ${isDone(habit.id, day) ? 'checked' : ''}>
+                            <span class="check-circle" aria-hidden="true">✓</span>
+                        </label>`;
+                }).join('');
+
+                return `
+                    <article class="habit-card">
+                        <div class="habit-top">
+                            <div>
+                                <h3 class="habit-name">${escapeHtml(habit.name)}</h3>
+                                <span class="habit-progress">${completionCount} / ${habit.goal} cette semaine</span>
+                            </div>
+                            <button class="delete-habit-button" type="button" data-delete-id="${habit.id}" aria-label="Supprimer l’habitude ${escapeHtml(habit.name)}" title="Supprimer">×</button>
+                        </div>
+                        <div class="day-checkboxes" role="group" aria-label="Jours pour ${escapeHtml(habit.name)}">${checks}</div>
+                    </article>`;
+            }).join('');
+        }
+
+        function renderProgress() {
+            const habits = currentHabits();
+            const dates = weekDates();
+            const completed = habits.reduce((total, habit) => total + dates.filter(day => isDone(habit.id, day)).length, 0);
+            const target = habits.reduce((total, habit) => total + habit.goal, 0);
+            const percent = target ? Math.min(100, Math.round((completed / target) * 100)) : 0;
+
+            elements.progressPercent.textContent = `${percent}%`;
+            elements.progressText.textContent = target ? `${completed} coche${completed > 1 ? 's' : ''} sur ${target} objectif${target > 1 ? 's' : ''}` : 'Une nouvelle semaine à inventer';
+            elements.progressDetail.textContent = target
+                ? (completed >= target ? 'Objectif de la semaine atteint, bravo ! 🎉' : `Encore ${target - completed} pour atteindre vos objectifs.`)
+                : 'Ajoutez une habitude pour commencer.';
+
+            elements.debugHabits.textContent = String(habits.length);
+            elements.debugChecks.textContent = String(completed);
+            elements.debugSync.textContent = state.lastSync
+                ? state.lastSync.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+                : '—';
+        }
+
+        function render() {
+            renderCalendar();
+            renderHabits();
+            renderProgress();
+        }
+
+        let toastTimer;
+        function showToast(message) {
+            window.clearTimeout(toastTimer);
+            elements.toast.textContent = message;
+            elements.toast.classList.add('show');
+            toastTimer = window.setTimeout(() => elements.toast.classList.remove('show'), 2600);
+        }
+
+        async function addHabit(event) {
+            event.preventDefault();
+            const name = elements.name.value.trim();
+            const goal = clampGoal(elements.goal.value);
+            if (!name) return;
+
+            const button = elements.form.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'Ajout…';
+            try {
+                const newHabit = push(ref(database, `${databasePath()}/habits`));
+                await set(newHabit, { name, goal, createdAt: Date.now() });
+                elements.form.reset();
+                elements.goal.value = '3';
+                showToast('Habitude ajoutée ✨');
+            } catch (error) {
+                console.error('Impossible d’ajouter l’habitude', error);
+                showToast('Impossible de sauvegarder. Vérifiez la connexion Firebase.');
+            } finally {
+                button.disabled = false;
+                button.textContent = '+ Ajouter';
+            }
+        }
+
+        async function toggleCompletion(input) {
+            const habitId = input.dataset.habitId;
+            const day = input.dataset.date;
+            const done = input.checked;
+            input.disabled = true;
+            try {
+                const completionRef = ref(database, `${databasePath()}/completions/${day}/${habitId}`);
+                if (done) {
+                    await set(completionRef, true);
+                } else {
+                    await remove(completionRef);
+                }
+            } catch (error) {
+                console.error('Impossible de modifier la coche', error);
+                input.checked = !done;
+                showToast('La coche n’a pas pu être sauvegardée.');
+            } finally {
+                input.disabled = false;
+            }
+        }
+
+        async function deleteHabit(id) {
+            const habit = state.habits[id];
+            if (!habit || !window.confirm(`Supprimer « ${habit.name} » ? Les coches associées seront aussi effacées.`)) return;
+
+            try {
+                await Promise.all([
+                    remove(ref(database, `${databasePath()}/habits/${id}`)),
+                    removeHabitCompletions(id)
+                ]);
+                showToast('Habitude supprimée.');
+            } catch (error) {
+                console.error('Impossible de supprimer l’habitude', error);
+                showToast('La suppression a échoué.');
+            }
+        }
+
+        async function removeHabitCompletions(id) {
+            const datesWithHabit = Object.entries(state.completions)
+                .filter(([, completions]) => completions?.[id] === true)
+                .map(([day]) => remove(ref(database, `${databasePath()}/completions/${day}/${id}`)));
+            await Promise.all(datesWithHabit);
+        }
+
+        function subscribeToProfile() {
+            const profileKey = state.activeProfile;
+            const profile = currentProfile();
+            unsubscribeTracker();
+
+            state.habits = {};
+            state.completions = {};
+            state.connected = false;
+            state.lastSync = null;
+            updateProfileUI();
+            setStatus('', `Connexion ${profile.name}…`);
+            render();
+
+            const path = databasePath();
+            unsubscribeTracker = onValue(ref(database, path), snapshot => {
+                if (state.activeProfile !== profileKey) return;
+                const data = snapshot.val() || {};
+                state.habits = data.habits || {};
+                state.completions = data.completions || {};
+                state.connected = true;
+                state.lastSync = new Date();
+                setStatus('connected', 'Synchronisé');
+                render();
+            }, error => {
+                if (state.activeProfile !== profileKey) return;
+                console.error('Erreur Firebase', error);
+                state.connected = false;
+                setStatus('error', 'Hors connexion');
+                showToast('Firebase est inaccessible : les modifications ne sont pas sauvegardées.');
+                render();
+            });
+        }
+
+        function switchProfile(profileKey) {
+            if (!PROFILES[profileKey] || profileKey === state.activeProfile) return;
+            state.activeProfile = profileKey;
+            subscribeToProfile();
+        }
+
+        elements.form.addEventListener('submit', addHabit);
+        document.getElementById('previousWeek').addEventListener('click', () => { state.selectedWeek = addDays(state.selectedWeek, -7); render(); });
+        document.getElementById('nextWeek').addEventListener('click', () => { state.selectedWeek = addDays(state.selectedWeek, 7); render(); });
+        document.getElementById('todayButton').addEventListener('click', () => { state.selectedWeek = getStartOfWeek(new Date()); render(); });
+
+        elements.habitsList.addEventListener('change', event => {
+            if (event.target.matches('input[type="checkbox"][data-habit-id]')) toggleCompletion(event.target);
+        });
+        elements.habitsList.addEventListener('click', event => {
+            const button = event.target.closest('[data-delete-id]');
+            if (button) deleteHabit(button.dataset.deleteId);
+        });
+        elements.profileTabs.forEach(tab => {
+            tab.addEventListener('click', () => switchProfile(tab.dataset.profile));
+        });
+
+        document.getElementById('copyDebug').addEventListener('click', async () => {
+            const snapshot = {
+                path: databasePath(),
+                habits: state.habits,
+                completions: state.completions,
+                selectedWeek: dateKey(state.selectedWeek),
+                copiedAt: new Date().toISOString()
+            };
+            try {
+                await navigator.clipboard.writeText(JSON.stringify(snapshot, null, 2));
+                showToast('Snapshot de debug copié.');
+            } catch {
+                showToast('La copie automatique n’est pas disponible ici.');
+            }
+        });
+
+        subscribeToProfile();
+    </script>
+
+    <style>
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    </style>
+</body>
+</html>
